@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button, Card } from 'm3-svelte';
+  import {fly} from "svelte/transition";
 
   let name = '';
   let email = '';
@@ -15,14 +16,16 @@
   }
 </script>
 
-<section class="max-w-[1280px] mx-auto px-4 py-10">
-  <header class="mb-8">
-    <h1 class="text-3xl font-bold text-on-surface mb-2">Kontak</h1>
-    <p class="text-on-surface-variant max-w-2xl">
-      Hubungi kami untuk informasi program, kerja sama, atau pertanyaan lainnya.
-    </p>
-  </header>
+<section in:fly={{duration:400,delay:200, y:10}}
+class="hero bg-gradient-to-t from-bg to-primary-container text-primary  px-8 py-16 mb-10 flex flex-col items-center justify-center text-center">
+  <h1 class="text-4xl font-bold mb-4">Kontak Kami</h1>
+  <p class="text-lg mb-6 max-w-2xl">
+    Hubungi kami untuk informasi program, kerja sama, atau pertanyaan lainnya.
+  </p>
 
+</section>
+
+<section class="max-w-[1280px] mx-auto px-4 py-10">
   <div class="grid gap-6 md:grid-cols-2">
     <Card variant="elevated">
       <form class="p-4 space-y-4" on:submit|preventDefault={submitForm}>
@@ -98,6 +101,7 @@
       </div>
     </div>
   </div>
+
 </section>
 
 
