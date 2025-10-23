@@ -36,14 +36,15 @@ RUN pnpm install --frozen-lockfile
 
 # Copy built application from base stage
 COPY --from=base /app/build build/
-COPY --from=base /app/package.json .
+COPY --from=base /app/package*.json .
 
-# Expose port 3000
-EXPOSE 3000
+# Expose port 3002
+EXPOSE 3002
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3002
+ENV HOST=0.0.0.0
 
 # Start the application
 CMD ["node", "build"]

@@ -4,8 +4,9 @@ services:
   lemdiklat-mpi:
     build: .
     ports:
-      - "3002:3000"
+      - "3002:3002"
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3002
+      - HOST=0.0.0.0
     restart: unless-stopped
