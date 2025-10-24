@@ -12,7 +12,7 @@
     { href: '/contact', label: 'Kontak' }
   ];
 
-  let { toggleTheme }: { toggleTheme: () => void } = $props();
+ let { toggleTheme }: { toggleTheme: (e: MouseEvent) => void } = $props();
 
   let searchText = "";
   let showDark = $state(false);
@@ -95,7 +95,7 @@
       <Button href="/register" variant="filled">Daftar</Button>
       <span class="mx-2 h-6 w-px bg-outline-variant inline-block align-middle"></span>
       <!-- Theme switch button (light/dark) for m3-svelte -->
-      <Button variant="tonal" iconType="full" onclick={() => { showDark = !showDark; toggleTheme(); }}>
+      <Button variant="tonal" iconType="full" onclick={(e) => { showDark = !showDark; toggleTheme(e); }}>
         <Icon icon={showDark ? iconLight : iconDark} />
       </Button>
     </div>

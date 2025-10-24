@@ -1,9 +1,20 @@
+/* ================================
+   Imports
+   ================================ */
 @import 'tailwindcss';
 @import 'm3-svelte/misc/styles.css';
 @import 'm3-svelte/misc/recommended-styles.css';
+
+/* ================================
+   Root Configuration
+   ================================ */
 :root {
 	--m3-util-density: 1;
 }
+
+/* ================================
+   Light Theme (Media Preference)
+   ================================ */
 @media (prefers-color-scheme: light) {
 	:root {
 		color-scheme: light;
@@ -72,6 +83,10 @@
 		--m3-scheme-on-error-container-subtle: 143 37 38;
 	}
 }
+
+/* ================================
+   Dark Theme (Media Preference)
+   ================================ */
 @media (prefers-color-scheme: dark) {
 	:root {
 		color-scheme: dark;
@@ -141,10 +156,16 @@
 	}
 }
 
-/* Manual theme override via data-theme attribute (overrides media preference) */
+/* ================================
+   Manual Theme Override
+   (Overrides media preference via data-theme attribute)
+   ================================ */
+
+/* Light Theme Override */
 :root[data-theme='light'] {
 	color-scheme: light;
 }
+
 :root[data-theme='light'],
 :root[data-theme='light']::backdrop {
 	--m3-scheme-background: 249 249 254;
@@ -209,9 +230,11 @@
 	--m3-scheme-on-error-container-subtle: 143 37 38;
 }
 
+/* Dark Theme Override */
 :root[data-theme='dark'] {
 	color-scheme: dark;
 }
+
 :root[data-theme='dark'],
 :root[data-theme='dark']::backdrop {
 	--m3-scheme-background: 13 14 18;
@@ -276,6 +299,9 @@
 	--m3-scheme-on-error-container-subtle: 255 137 131;
 }
 
+/* ================================
+   Theme Configuration
+   ================================ */
 @theme {
 	--spacing: 0.25rem;
 	--breakpoint-m: 37.5rem; /* ≅ sm */
@@ -292,18 +318,21 @@
 @theme inline {
 	--font-mono: var(--m3-font-mono);
 
+	/* Elevation Shadows */
 	--shadow-1: var(--m3-util-elevation-1);
 	--shadow-2: var(--m3-util-elevation-2);
 	--shadow-3: var(--m3-util-elevation-3);
 	--shadow-4: var(--m3-util-elevation-4);
 	--shadow-5: var(--m3-util-elevation-5);
 
+	/* Border Radius */
 	--radius-xs: var(--m3-util-rounding-extra-small); /* = 4px = rounded-sm */
 	--radius-sm: var(--m3-util-rounding-small); /* = 8px = rounded-lg */
 	--radius-md: var(--m3-util-rounding-medium); /* = 12px = rounded-xl */
 	--radius-lg: var(--m3-util-rounding-large); /* = 16px = rounded-2xl */
 	--radius-xl: var(--m3-util-rounding-extra-large); /* = 28px ≅ rounded-3xl */
 
+	/* Easing Functions */
 	--ease-fast-spatial: var(--m3-util-timing-function-fast-spatial);
 	--ease-spatial: var(--m3-util-timing-function-spatial);
 	--ease-slow-spatial: var(--m3-util-timing-function-slow-spatial);
@@ -314,9 +343,11 @@
 	--ease-emphasized-accel: var(--m3-util-timing-function-emphasized-accel);
 	--ease-emphasized-decel: var(--m3-util-timing-function-emphasized-decel);
 
+	/* Transition Defaults */
 	--default-transition-timing-function: var(--ease);
 	--default-transition-duration: var(--m3-util-duration);
 
+	/* Color Scheme Variables */
 	--color-background: rgb(var(--m3-scheme-background));
 	--color-on-background: rgb(var(--m3-scheme-on-background));
 	--color-surface: rgb(var(--m3-scheme-surface));
@@ -377,75 +408,129 @@
 	--color-on-error-container-subtle: rgb(var(--m3-scheme-on-error-container-subtle));
 	--color-util-background: var(--m3-util-background);
 }
+
+/* ================================
+   Transition Utilities
+   ================================ */
 @utility transition-fast-spatial {
 	transition-timing-function: var(--m3-util-timing-function-fast-spatial);
 	transition-duration: var(--m3-util-duration-fast-spatial);
 }
+
 @utility transition-spatial {
 	transition-timing-function: var(--m3-util-timing-function-spatial);
 	transition-duration: var(--m3-util-duration-spatial);
 }
+
 @utility transition-slow-spatial {
 	transition-timing-function: var(--m3-util-timing-function-slow-spatial);
 	transition-duration: var(--m3-util-duration-slow-spatial);
 }
+
 @utility transition-fast {
 	transition-timing-function: var(--m3-util-timing-function-fast);
 	transition-duration: var(--m3-util-duration-fast);
 }
+
 @utility transition-slow {
 	transition-timing-function: var(--m3-util-timing-function-slow);
 	transition-duration: var(--m3-util-duration-slow);
 }
 
+/* ================================
+   Material 3 Font Utilities
+   ================================ */
 @utility m3-font-display-large {
 	--: '';
 }
+
 @utility m3-font-display-medium {
 	--: '';
 }
+
 @utility m3-font-display-small {
 	--: '';
 }
+
 @utility m3-font-headline-large {
 	--: '';
 }
+
 @utility m3-font-headline-medium {
 	--: '';
 }
+
 @utility m3-font-headline-small {
 	--: '';
 }
+
 @utility m3-font-title-large {
 	--: '';
 }
+
 @utility m3-font-title-medium {
 	--: '';
 }
+
 @utility m3-font-title-small {
 	--: '';
 }
+
 @utility m3-font-label-large {
 	--: '';
 }
+
 @utility m3-font-label-medium {
 	--: '';
 }
+
 @utility m3-font-label-small {
 	--: '';
 }
+
 @utility m3-font-body-large {
 	--: '';
 }
+
 @utility m3-font-body-medium {
 	--: '';
 }
+
 @utility m3-font-body-small {
 	--: '';
 }
 
+/* ================================
+   Base Styles
+   ================================ */
 @layer base {
 	:root {
 		box-sizing: border-box;
 	}
+}
+
+.theme-ripple {
+	position: fixed;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	pointer-events: none;
+	transform: scale(0);
+	opacity: 1;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	translate: -50% -50%;
+	transition:
+		transform 0.8s ease-out,
+		opacity 0.8s ease,
+		background-color 0.6s ease;
+}
+
+.theme-ripple.expand {
+	transform: scale(200);
+}
+
+.theme-ripple.fade {
+	opacity: 0;
 }

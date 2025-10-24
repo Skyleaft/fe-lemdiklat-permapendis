@@ -8,6 +8,7 @@
 	import { page } from "$app/stores";
 	import { fade, fly, slide, draw, crossfade } from "svelte/transition";
 	import { onMount } from "svelte";
+	import { animate, spring } from 'motion';
 	
 	let { children } = $props();
 
@@ -24,10 +25,48 @@
 		}
 	}
 	
-	export function toggleTheme() {
+	export function toggleTheme(e: MouseEvent) {
 		isDark = !isDark;
 		localStorage.setItem("m3-theme", isDark ? "dark" : "light");
-		applyThemeAttr(isDark);
+		// Posisi klik relatif ke viewport
+		const x = e.clientX;
+		const y = e.clientY;
+
+		const rippleEl = document.createElement('div');
+		rippleEl.className = 'theme-ripple';
+		document.body.appendChild(rippleEl);
+
+		// Posisi ripple
+		rippleEl.style.left = `${x}px`;
+		rippleEl.style.top = `${y}px`;
+
+		const rippleColor = !isDark
+			? 'rgb(243 243 250)'
+			: 'rgb(17 19 24)'; 
+
+		rippleEl.style.backgroundColor = rippleColor;
+
+		// Mulai animasi scale
+		requestAnimationFrame(() => rippleEl.classList.add('expand'));
+
+		// Ganti tema setelah ripple cukup besar
+		setTimeout(() => {
+			applyThemeAttr(isDark);
+		}, 300);
+
+		// Setelah tema berganti, fade out ripple
+		setTimeout(() => {
+			rippleEl.classList.add('fade');
+		}, 400);
+
+		// Hapus ripple setelah animasi selesai
+		setTimeout(() => {
+			rippleEl.remove();
+		}, 1300);
+
+		//applyThemeAttr(isDark);
+
+		
 	}
 	
 	onMount(() => {
@@ -63,11 +102,26 @@
 	});
 	let { light, dark } = $derived(schemes[variant]);
 </script>
+
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
+
+
+<Navbar {toggleTheme} />
+{#key $page.url.pathname}
+	<div in:fly={{ duration: 500,x:20 }} out:fly={{duration: 150,x:-20}}>
+		{@render children?.()}
+	</div>
+{/key}
+<Footer />
+
 <style>
 	/* Universal box-sizing */
 	*, *::before, *::after {
 		box-sizing: border-box;
 	}
+
 
 	html, body {
 		min-height: 100%;
@@ -109,15 +163,3 @@
 		}
 	}
 </style>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
-<Navbar {toggleTheme} />
-{#key $page.url.pathname}
-	<div in:fly={{ duration: 500,x:20 }} out:fly={{duration: 150,x:-20}}>
-		{@render children?.()}
-	</div>
-{/key}
-<Footer />
