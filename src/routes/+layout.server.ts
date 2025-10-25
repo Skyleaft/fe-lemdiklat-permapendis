@@ -1,4 +1,5 @@
 import type { ClaimUser } from '$lib/types';
+import { buildApiUrl } from '$lib/utils/api';
 
 /**
  * Server-side authentication check function
@@ -6,7 +7,7 @@ import type { ClaimUser } from '$lib/types';
  */
 async function checkAuth(fetch: typeof globalThis.fetch): Promise<ClaimUser | null> {
     try {
-        const response = await fetch('/api/auth/me', {
+        const response = await fetch(buildApiUrl('/api/auth/me'), {
             method: 'GET',
             // Cookies are automatically included in server-side fetch
         });

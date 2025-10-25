@@ -1,12 +1,13 @@
 import { redirect } from '@sveltejs/kit';
 import type { ClaimUser } from '$lib/types';
+import { buildApiUrl } from '$lib/utils/api';
 
 /**
  * Profile page server loader - requires authentication and fetches complete user data
  */
 async function checkAuth(fetch: typeof globalThis.fetch): Promise<ClaimUser> {
     try {
-        const response = await fetch('/api/auth/me', {
+        const response = await fetch(buildApiUrl('/api/auth/me'), {
             method: 'GET',
             // Cookies are automatically included in server-side fetch
         });
@@ -30,7 +31,7 @@ async function checkAuth(fetch: typeof globalThis.fetch): Promise<ClaimUser> {
  */
 async function getUserData(fetch: typeof globalThis.fetch, userId: string) {
     try {
-        const response = await fetch(`/api/users/${userId}`, {
+        const response = await fetch(buildApiUrl(`/api/users/${userId}`), {
             method: 'GET',
             // Cookies are automatically included in server-side fetch
         });
