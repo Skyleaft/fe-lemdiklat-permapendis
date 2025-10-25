@@ -9,6 +9,7 @@
 	import { fade, fly, slide, draw, crossfade } from "svelte/transition";
 	import { onMount } from "svelte";
 	import { animate, spring } from 'motion';
+	import { authStore } from '$lib/stores/auth';
 	
 	let { children } = $props();
 
@@ -69,7 +70,7 @@
 		
 	}
 	
-	onMount(() => {
+	onMount(async () => {
 		const saved = localStorage.getItem("m3-theme");
 		if (saved === "dark" || saved === "light") {
 			isDark = saved === "dark";
@@ -77,6 +78,9 @@
 			isDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 		}
 		applyThemeAttr(isDark);
+
+		// Check if user is already authenticated
+		await authStore.checkAuth();
 	});
 
 	let sourceColor = $state(13679871);

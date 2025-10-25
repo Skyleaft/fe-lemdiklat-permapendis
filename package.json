@@ -42,6 +42,7 @@
 		"@iconify/types": "^2.0.0",
 		"@ktibow/iconset-material-symbols": "^0.0.1760073587",
 		"@ktibow/material-color-utilities-nightly": "^0.3.11760125264000",
+		"cropperjs": "^2.1.0",
 		"m3-svelte": "^5.9.1",
 		"motion": "^12.23.24"
 	}

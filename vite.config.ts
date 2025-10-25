@@ -8,5 +8,14 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		devtoolsJson()
-	]
+	],
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:5001',
+				changeOrigin: true,
+				secure: false
+			}
+		}
+	}
 });

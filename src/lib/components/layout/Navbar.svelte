@@ -1,18 +1,28 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   import { Button, Icon, Dialog } from 'm3-svelte';
   import iconLight from "@ktibow/iconset-material-symbols/light-mode-outline";
   import iconDark from "@ktibow/iconset-material-symbols/dark-mode-outline";
+  import iconAccount from "@ktibow/iconset-material-symbols/account-circle";
+  import iconDashboard from "@ktibow/iconset-material-symbols/dashboard";
+  import iconProfile from "@ktibow/iconset-material-symbols/person";
+  import iconLogout from "@ktibow/iconset-material-symbols/logout";
+  import iconHome from "@ktibow/iconset-material-symbols/home";
+  import iconInfo from "@ktibow/iconset-material-symbols/info";
+  import iconContact from "@ktibow/iconset-material-symbols/contact-support";
   import LoginDialog from "$lib/components/ui/LoginDialog.svelte";
+  import { authStore } from "$lib/stores/auth";
+  import { buildApiUrl } from "$lib/utils/api";
 
-  type NavLink = { href: string; label: string };
+  type NavLink = { href: string; icon: any; label: string };
   const navLinks: NavLink[] = [
-    { href: '/', label: 'Beranda' },
-    { href: '/about', label: 'Tentang' },
-    { href: '/contact', label: 'Kontak' }
+    { href: '/', icon: iconHome, label: 'Beranda' },
+    { href: '/about', icon: iconInfo, label: 'Tentang' },
+    { href: '/contact', icon: iconContact, label: 'Kontak' }
   ];
 
- let { toggleTheme }: { toggleTheme: (e: MouseEvent) => void } = $props();
+  let { toggleTheme }: { toggleTheme: (e: MouseEvent) => void } = $props();
 
   let searchText = "";
   let showDark = $state(false);
@@ -20,61 +30,55 @@
   let isLogining = $state(false);
 
   let isMenuOpen = $state(false);
+
+  let loggedIn = $state(false);
+  let userName = $state("");
+  let userId = $state("");
+
+  let showUserMenu = $state(false);
+
+  // Subscribe to auth store for all updates
+  let profilePhotoRefreshKey = $state(0);
+  authStore.subscribe((state) => {
+    loggedIn = state.isAuthenticated;
+    userName = state.user?.profileName || state.user?.username || '';
+    userId = state.user?.id || '';
+    profilePhotoRefreshKey = state.profilePhotoRefreshKey;
+  });
+
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
   }
+
+  function toggleUserMenu() {
+    showUserMenu = !showUserMenu;
+  }
+
+  function closeUserMenu() {
+    showUserMenu = false;
+  }
+
+  function navigateToDashboard() {
+    window.location.href = '/dashboard';
+    closeUserMenu();
+  }
+
+  function navigateToProfile() {
+    window.location.href = '/profile';
+    closeUserMenu();
+  }
+
+  async function handleLogout() {
+    await authStore.logout();
+    goto('/');
+    closeUserMenu();
+  }
 </script>
-<style>
-  /* Responsive enhancement for Navbar */
-  .mobile-nav-menu {
-    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .mobile-nav-menu.open {
-    max-height: 400px;
-    opacity: 1;
-    pointer-events: auto;
-  }
-  @media (min-width: 768px) {
-    .mobile-nav-toggle,
-    .mobile-nav-menu {
-      display: none !important;
-    }
-  }
-</style>
 
 <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur shadow-1">
   <div class="mx-auto flex items-center justify-between px-4 py-2 gap-2">
     <a href="/" class="font-bold text-primary  tracking-tight">Lemdiklat Permapendis</a>
-    <form
-      class="hidden md:block"
-      role="search"
-      aria-label="Cari"
-      on:submit|preventDefault={() => {
-        // Simple placeholder behavior: alert or implement routing
-        if (searchText.trim()) {
-          window.location.href = `/search?q=${encodeURIComponent(searchText)}`;
-        }
-      }}
-    >
-      <div class="relative flex items-center">
-        <span class="absolute left-2 top-1/2 -translate-y-1/2  pointer-events-none">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <path d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zm6.53 13.47a.75.75 0 1 1 1.06 1.06l-2.24 2.24a.75.75 0 0 1-1.06-1.06l2.24-2.24zM10.5 4.5a6 6 0 1 0 0 12 6 6 0 0 0 0-12z" fill="currentColor"/>
-          </svg>
-        </span>
-        <input
-          bind:value={searchText}
-          type="search"
-          placeholder="Cari..."
-          class="rounded-sm pl-8 pr-3 py-1 border border-outline w-100 bg-surface focus:outline-none focus:border-primary transition-all placeholder-on-surface-variant text-sm text-on-surface"
-          aria-label="Kotak pencarian"
-        />
-      </div>
-    </form>
+
 
     <LoginDialog bind:open={isLogining} />
     
@@ -84,18 +88,91 @@
         <Button
           href={link.href}
           aria-current={$page.url.pathname === link.href ? 'page' : undefined}
-          square
+          iconType="left"
           variant="text"
         >
+          <Icon icon={link.icon} />
           {link.label}
         </Button>
       {/each}
       <span class="mx-2 h-6 w-px bg-outline-variant inline-block align-middle"></span>
-      <Button variant="outlined" onclick={() => (isLogining = true)}>Masuk</Button>
-      <Button href="/register" variant="filled">Daftar</Button>
+      {#if loggedIn}
+        <div class="relative flex items-center gap-2">
+          <!-- Avatar -->
+          {#if userId}
+            <img
+              class="avatar-img"
+              src="{buildApiUrl(`api/users/profile-photo/${userId}`)}?t={profilePhotoRefreshKey}"
+              alt="Profile photo"
+              onerror={(e) => {
+                // Hide image and show fallback on error
+                const img = e.currentTarget as HTMLImageElement;
+                img.style.display = 'none';
+                const nextEl = img.nextElementSibling as HTMLElement;
+                if (nextEl) nextEl.style.display = 'flex';
+              }}
+            />
+            <div class="avatar-fallback" style="display: none;">
+              <Icon icon={iconAccount} />
+            </div>
+          {:else}
+            <div class="avatar-fallback">
+              <Icon icon={iconAccount} />
+            </div>
+          {/if}
+
+          <!-- Clickable username -->
+          <button
+            class="text-sm text-on-surface hover:text-on-surface-variant cursor-pointer flex items-center gap-1"
+            onclick={toggleUserMenu}
+          >
+            {userName}
+            <!-- Dropdown arrow -->
+            <svg
+              class="w-4 h-4 transition-transform {showUserMenu ? 'rotate-180' : ''}"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- User menu dropdown -->
+          <div
+            class="user-menu {showUserMenu ? 'open' : ''} bg-surface/90 backdrop-blur" 
+          >
+            <button
+              class="w-full px-4 py-2 text-left text-on-surface hover:bg-surface-container flex items-center gap-2 rounded-md"
+              onclick={navigateToDashboard}
+            >
+              <Icon icon={iconDashboard} />
+              Dashboard
+            </button>
+            <button
+              class="w-full px-4 py-2 text-left text-on-surface hover:bg-surface-container flex items-center gap-2 rounded-md"
+              onclick={navigateToProfile}
+            >
+              <Icon icon={iconProfile} />
+              Profil
+            </button>
+            <hr class="border-outline-variant my-1" />
+            <button
+              class="w-full px-4 py-2 text-left text-on-surface hover:bg-surface-container flex items-center gap-2 rounded-md"
+              onclick={handleLogout}
+            >
+              <Icon icon={iconLogout} />
+              Keluar
+            </button>
+          </div>
+        </div>
+      {:else}
+        <Button variant="outlined" onclick={() => (isLogining = true)}>Masuk</Button>
+        <Button href="/register" variant="filled">Daftar</Button>
+      {/if}
       <span class="mx-2 h-6 w-px bg-outline-variant inline-block align-middle"></span>
       <!-- Theme switch button (light/dark) for m3-svelte -->
-      <Button variant="tonal" iconType="full" onclick={(e) => { showDark = !showDark; toggleTheme(e); }}>
+      <Button variant="tonal" iconType="full" onclick={(e: MouseEvent) => { showDark = !showDark; toggleTheme(e); }}>
         <Icon icon={showDark ? iconLight : iconDark} />
       </Button>
     </div>
@@ -113,17 +190,80 @@
   {#if isMenuOpen}
     <div class="md:hidden border-outline-variant bg-surface">
       <nav class="max-w-[1080px] mx-auto px-4 py-2 flex flex-col gap-1">
+        <!-- Navigation Links -->
         {#each navLinks as link}
           <a
             href={link.href}
             aria-current={$page.url.pathname === link.href ? 'page' : undefined}
-            class="px-3 py-2 rounded-md text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-on-surface aria-[current=page]:text-on-surface aria-[current=page]:font-semibold"
-            on:click={() => (isMenuOpen = false)}
+            class="px-3 py-2 rounded-md text-sm font-medium text-on-surface-variant hover:bg-surface-container hover:text-on-surface aria-[current=page]:text-on-surface aria-[current=page]:font-semibold flex items-center gap-2"
+            onclick={() => (isMenuOpen = false)}
           >
+            <Icon icon={link.icon} />
             {link.label}
           </a>
         {/each}
 
+        {#if loggedIn}
+          <!-- User Info -->
+          <div class="flex items-center gap-2 px-3 py-2 my-2 border-t border-outline-variant">
+            <!-- Avatar -->
+            {#if userId}
+              <img
+                class="avatar-img"
+                src="{buildApiUrl(`api/users/profile-photo/${userId}`)}?t={profilePhotoRefreshKey}"
+                alt="Profile photo"
+                onerror={(e) => {
+                  const img = e.currentTarget as HTMLImageElement;
+                  img.style.display = 'none';
+                  const nextEl = img.nextElementSibling as HTMLElement;
+                  if (nextEl) nextEl.style.display = 'flex';
+                }}
+              />
+              <div class="avatar-fallback" style="display: none;">
+                <Icon icon={iconAccount} />
+              </div>
+            {:else}
+              <div class="avatar-fallback">
+                <Icon icon={iconAccount} />
+              </div>
+            {/if}
+            <span class="text-sm font-medium text-on-surface">{userName}</span>
+          </div>
+
+          <!-- User Menu Options -->
+          <div class="flex flex-col gap-1">
+            <button
+              class="w-full px-3 py-2 text-left text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 rounded-md"
+              onclick={() => { navigateToDashboard(); isMenuOpen = false; }}
+            >
+              <Icon icon={iconDashboard} />
+              Dashboard
+            </button>
+            <button
+              class="w-full px-3 py-2 text-left text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 rounded-md"
+              onclick={() => { navigateToProfile(); isMenuOpen = false; }}
+            >
+              <Icon icon={iconProfile} />
+              Profil
+            </button>
+            <hr class="border-outline-variant my-1" />
+            <button
+              class="w-full px-3 py-2 text-left text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 rounded-md"
+              onclick={() => { handleLogout(); isMenuOpen = false; }}
+            >
+              <Icon icon={iconLogout} />
+              Keluar
+            </button>
+          </div>
+        {:else}
+          <!-- Auth Buttons -->
+          <div class="flex gap-2 pt-2 px-3">
+            <Button variant="outlined" onclick={() => { isLogining = true; isMenuOpen = false; }}>Masuk</Button>
+            <Button href="/register" variant="filled" onclick={() => { isMenuOpen = false; }}>Daftar</Button>
+          </div>
+        {/if}
+
+        <!-- Close Button -->
         <div class="pt-1">
           <Button onclick={() => (isMenuOpen = false)}>Tutup</Button>
         </div>
@@ -132,4 +272,63 @@
   {/if}
 </header>
 
+<style>
+  /* Responsive enhancement for Navbar */
+  .mobile-nav-menu {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .mobile-nav-menu.open {
+    max-height: 400px;
+    opacity: 1;
+    pointer-events: auto;
+  }
 
+  .user-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 50;
+    min-width: 200px;
+    border: 1px solid rgb(var(--m3-scheme-surface-container-low)/0.7);
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .user-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .avatar-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .avatar-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--md-sys-color-surface-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-nav-toggle,
+    .mobile-nav-menu {
+      display: none !important;
+    }
+  }
+</style>
