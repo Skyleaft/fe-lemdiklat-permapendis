@@ -72,31 +72,22 @@ class="hero bg-gradient-to-t from-bg to-primary-container text-primary  px-8 py-
         <div class="p-4 space-y-2 text-on-surface-variant">
           <div>
             <div class="font-semibold text-on-surface">Alamat</div>
-            <div>Jl. Contoh No. 123, Jakarta</div>
+            <div>Jl. Gedebage Selatan No.137 Kel. Cisaranteun Kidul, Kec. Gedebage, Kota Bandung 40295</div>
           </div>
           <div>
             <div class="font-semibold text-on-surface">Email</div>
             <a href="mailto:info@lemdiklat-permapendis.com" class="text-primary hover:underline">info@lemdiklat-permapendis.com</a>
           </div>
-          <div>
+          <!-- <div>
             <div class="font-semibold text-on-surface">Telepon</div>
             <a href="tel:+62123456789" class="text-primary hover:underline">+62 123-456-789</a>
-          </div>
+          </div> -->
         </div>
       </Card>
 
       <div class="rounded-lg overflow-hidden border border-outline-variant">
         <div class="aspect-[16/9] w-full">
-          <iframe
-            title="Lokasi pada Peta"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.674769326408!2d106.816635!3d-6.175387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e9f0b1b1a3%3A0x1a2b3c4d5e6f7a8b!2sMonas!5e0!3m2!1sid!2sid!4v1700000000000"
-            width="100%"
-            height="100%"
-            style="border:0;"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+          <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Jl.%20Gedebage%20Selatan%20No.137%20Kel.%20Cisaranteun%20Kidul,%20Kec.%20Gedebage,%20Kota%20Bandung%2040295+(Lemdiklat%20Permapendis)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.mapsdirections.info/it/calcola-la-popolazione-su-una-mappa/">popolazione comuni Italia mappa interattiva</a></iframe>
         </div>
       </div>
     </div>

@@ -18,10 +18,10 @@
     <div>
       <h2 class="font-bold text-lg mb-2">Kontak Kami</h2>
       <p>Lemdiklat Permapendis</p>
-      <p>Jalan Pendidikan No. 123<br/> Jakarta, Indonesia</p>
-      <p class="mt-2">
+      <p>Jl. Gedebage Selatan No.137 Kel. Cisaranteun Kidul, Kec. Gedebage,<br> Kota Bandung 40295</p>
+      <!-- <p class="mt-2">
         <span class="font-medium">Telp:</span> <a href="tel:+622112345678" class="hover:underline">+62 21 1234 5678</a>
-      </p>
+      </p> -->
       <p>
         <span class="font-medium">Email:</span> <a href="mailto:info@lemdiklat-Permapendis.id" class="hover:underline">info@lemdiklat-permapendis.id</a>
       </p>
