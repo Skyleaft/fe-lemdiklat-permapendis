@@ -16,3 +16,72 @@ export function buildApiUrl(path: string): string {
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
     return `${API_BASE_URL}/${cleanPath}`;
 }
+
+// Article API calls
+export interface CreateArticleRequest {
+    title: string;
+    categoryId: number;
+    content?: string;
+    author?: string;
+    thumbnail?: string;
+}
+
+export interface ArticleCategory {
+    id: number;
+    name: string;
+}
+
+export async function createArticle(data: CreateArticleRequest): Promise<Response> {
+    const response = await fetch(buildApiUrl('/api/articles'), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to create article: ${response.status} ${response.statusText}`);
+    }
+
+    return response;
+}
+
+export async function getArticleCategories(): Promise<ArticleCategory[]> {
+    const response = await fetch(buildApiUrl('/api/article-categories'), {
+        method: 'GET',
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to get article categories: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export interface UpdateArticleRequest {
+    title: string;
+    categoryId: number;
+    content?: string;
+    thumbnail?: string;
+    isPublished: boolean;
+}
+
+export async function updateArticle(id: number, data: UpdateArticleRequest): Promise<Response> {
+    const response = await fetch(buildApiUrl(`/api/articles/${id}`), {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to update article: ${response.status} ${response.statusText}`);
+    }
+
+    return response;
+}

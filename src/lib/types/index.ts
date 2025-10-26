@@ -74,3 +74,68 @@ export interface ChangePasswordRequest {
     oldPassword: string;
     newPassword: string;
 }
+
+export interface Article {
+    id: number;
+    title: string;
+    slug: string;
+    content: string;
+    author: string;
+    createdAt: string;
+    updatedAt: string;
+    isPublished: boolean;
+    categoryId: number;
+    thumbnail: string;
+}
+
+export interface ArticleCategory {
+    id: number;
+    name: string;
+}
+
+export interface CreateArticleDto {
+    title: string;
+    content?: string | null;
+    author?: string | null;
+    categoryId: number;
+    thumbnail?: string | null;
+}
+
+export interface UpdateArticleDto {
+    title: string;
+    content?: string | null;
+    categoryId: number;
+    thumbnail?: string | null;
+    isPublished: boolean;
+}
+
+export interface CreateArticleCategoryDto {
+    name: string;
+}
+
+export interface UpdateArticleCategoryDto {
+    name: string;
+}
+
+export interface FindRequest {
+    search?: string;
+    page?: number;
+    pageSize?: number;
+    sort?: string;
+    order?: string;
+    filter?: string;
+}
+
+export interface PaginatedResponseArticle {
+    data: Article[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+}
+
+export interface PaginatedResponseArticleCategory {
+    data: ArticleCategory[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+}

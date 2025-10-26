@@ -3,32 +3,33 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import Navbar from '$lib/components/layout/Navbar.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
-	import { DynamicScheme, Hct, Variant } from "@ktibow/material-color-utilities-nightly";
-	import variants from "./variants";
-	import { page } from "$app/stores";
-	import { fade, fly, slide, draw, crossfade } from "svelte/transition";
-	import { onMount } from "svelte";
+	import DashboardSidebar from '$lib/components/layout/DashboardSidebar.svelte';
+	import { DynamicScheme, Hct, Variant } from '@ktibow/material-color-utilities-nightly';
+	import variants from './variants';
+	import { page } from '$app/stores';
+	import { fade, fly, slide, draw, crossfade } from 'svelte/transition';
+	import { onMount } from 'svelte';
 	import { animate, spring } from 'motion';
 	import { authStore } from '$lib/stores/auth';
-	
+
 	let { children } = $props();
 
 	let isDark = $state(false);
 
 	function applyThemeAttr(dark: boolean) {
 		if (typeof document !== 'undefined') {
-			document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+			document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 			if (dark) {
-				document.documentElement.classList.add("dark");
+				document.documentElement.classList.add('dark');
 			} else {
-				document.documentElement.classList.remove("dark");
+				document.documentElement.classList.remove('dark');
 			}
 		}
 	}
-	
+
 	export function toggleTheme(e: MouseEvent) {
 		isDark = !isDark;
-		localStorage.setItem("m3-theme", isDark ? "dark" : "light");
+		localStorage.setItem('m3-theme', isDark ? 'dark' : 'light');
 		// Posisi klik relatif ke viewport
 		const x = e.clientX;
 		const y = e.clientY;
@@ -41,9 +42,7 @@
 		rippleEl.style.left = `${x}px`;
 		rippleEl.style.top = `${y}px`;
 
-		const rippleColor = !isDark
-			? 'rgb(243 243 250)'
-			: 'rgb(17 19 24)'; 
+		const rippleColor = !isDark ? 'rgb(243 243 250)' : 'rgb(17 19 24)';
 
 		rippleEl.style.backgroundColor = rippleColor;
 
@@ -66,16 +65,17 @@
 		}, 1300);
 
 		//applyThemeAttr(isDark);
-
-		
 	}
-	
+
 	onMount(async () => {
-		const saved = localStorage.getItem("m3-theme");
-		if (saved === "dark" || saved === "light") {
-			isDark = saved === "dark";
+		const saved = localStorage.getItem('m3-theme');
+		if (saved === 'dark' || saved === 'light') {
+			isDark = saved === 'dark';
 		} else {
-			isDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+			isDark =
+				typeof window !== 'undefined' &&
+				window.matchMedia &&
+				window.matchMedia('(prefers-color-scheme: dark)').matches;
 		}
 		applyThemeAttr(isDark);
 
@@ -85,7 +85,7 @@
 
 	let sourceColor = $state(13679871);
 	let variant: Variant = $state(Variant.TONAL_SPOT);
-	let specVersion: "2021" | "2025" = $state("2025");
+	let specVersion: '2021' | '2025' = $state('2025');
 	let contrast = $state(0);
 	let density = $state(0);
 
@@ -93,13 +93,13 @@
 		const commonArgs = {
 			sourceColorHct: Hct.fromInt(sourceColor),
 			contrastLevel: contrast,
-			specVersion,
+			specVersion
 		} as const;
 		const result = {} as Record<Variant, { light: DynamicScheme; dark: DynamicScheme }>;
 		for (const { id } of variants) {
 			result[id] = {
 				light: new DynamicScheme({ ...commonArgs, variant: id, isDark: false }),
-				dark: new DynamicScheme({ ...commonArgs, variant: id, isDark: true }),
+				dark: new DynamicScheme({ ...commonArgs, variant: id, isDark: true })
 			};
 		}
 		return result;
@@ -111,23 +111,31 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-
-<Navbar {toggleTheme} />
+{#if !$page.url.pathname.startsWith('/dashboard')}
+	<Navbar {toggleTheme} />
+{/if}
+{#if $page.url.pathname.startsWith('/dashboard') && $authStore.isAuthenticated}
+	<DashboardSidebar />
+{/if}
 {#key $page.url.pathname}
-	<div in:fly={{ duration: 500,x:20 }} out:fly={{duration: 150,x:-20}}>
+	<div in:fly={{ duration: 500, x: 20 }} out:fly={{ duration: 150, x: -20 }}>
 		{@render children?.()}
 	</div>
 {/key}
-<Footer />
+{#if !$page.url.pathname.startsWith('/dashboard')}
+	<Footer />
+{/if}
 
 <style>
 	/* Universal box-sizing */
-	*, *::before, *::after {
+	*,
+	*::before,
+	*::after {
 		box-sizing: border-box;
 	}
 
-
-	html, body {
+	html,
+	body {
 		min-height: 100%;
 	}
 
