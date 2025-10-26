@@ -54,13 +54,16 @@ export async function load({ fetch }) {
     // Check authentication and get basic user data
     const authUser = await checkAuth(fetch);
 
-    // Try to get complete user data from /api/users/{id}
+    // Get complete user data from /api/users/{id} - this is now required
     const userData = await getUserData(fetch, authUser.id);
 
-    // Return complete user data if available, otherwise fallback to auth data
-    const user = userData || authUser;
+    // Force use of UserData only - if fetch failed, throw error
+    if (!userData) {
+        console.error('Failed to fetch complete user data - UserData is required');
+        throw redirect(302, '/error?message=Unable%20to%20load%20profile%20data');
+    }
 
     return {
-        user
+        user: userData
     };
 }

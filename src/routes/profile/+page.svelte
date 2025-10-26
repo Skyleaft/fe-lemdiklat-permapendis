@@ -1,16 +1,17 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { invalidateAll } from '$app/navigation';
   import { Button, Card, TextField, Icon } from 'm3-svelte';
   import { onMount, onDestroy } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   import { buildApiUrl } from '$lib/utils/api';
-  import type { ClaimUser, UserData } from '$lib/types';
+  import type { UserData } from '$lib/types';
   import iconEdit from "@ktibow/iconset-material-symbols/edit";
   import iconCamera from "@ktibow/iconset-material-symbols/photo-camera";
 
 import { fade, fly, scale,blur } from 'svelte/transition';
 
-  let { data }: { data: { user: ClaimUser | UserData } } = $props(); // Can be ClaimUser or full User object
+  let { data }: { data: { user: UserData } } = $props(); // Always UserData now
 
   let user = data.user;
 
@@ -34,39 +35,20 @@ import { fade, fly, scale,blur } from 'svelte/transition';
   let isUploading = $state(false);
   let photoMessage = $state('');
   let photoMessageType = $state<'success' | 'error' | 'info'>('info');
-  let photoRefreshKey = $state(0); // Cache busting key for photo refresh
+  let imageRefreshKey = $state(Date.now()); // Image refresh key using current timestamp
 
-  // Check if it's a UserData (has userProfile and role)
-  const isUserData = 'userProfile' in user && 'role' in user;
-
-  // Get profile data for display, handling both ClaimUser and full User data structures
+  // Get profile data for display from UserData structure
   let displayData = $derived(() => {
-    if (isUserData) {
-      const userData = user as UserData;
-      return {
-        username: userData.username,
-        profileName: userData.userProfile.name,
-        email: userData.userProfile.email,
-        phone: userData.userProfile.phone || '',
-        address: userData.userProfile.address || '',
-        city: userData.userProfile.city || '',
-        userId: userData.id,
-        roleName: userData.role.name || `Role ${userData.role.id}`
-      };
-    } else {
-      // It's a ClaimUser
-      const claimUser = user as ClaimUser;
-      return {
-        username: claimUser.username || '',
-        profileName: claimUser.profileName || '',
-        email: claimUser.email || '',
-        phone: '',
-        address: '',
-        city: '',
-        userId: claimUser.id,
-        roleName: `Role ${claimUser.roleId}`
-      };
-    }
+    return {
+      username: user.username,
+      profileName: user.userProfile.name,
+      email: user.userProfile.email,
+      phone: user.userProfile.phone || '',
+      address: user.userProfile.address || '',
+      city: user.userProfile.city || '',
+      userId: user.id,
+      roleName: user.role.name || `Role ${user.role.id}`
+    };
   });
 
   function startEditing() {
@@ -93,7 +75,6 @@ import { fade, fly, scale,blur } from 'svelte/transition';
 
     try {
       // API call to update profile using correct endpoint and schema
-      const userData = user as UserData;
       const response = await fetch(buildApiUrl(`api/users/${user.id}`), {
         method: 'PUT',
         headers: {
@@ -105,7 +86,7 @@ import { fade, fly, scale,blur } from 'svelte/transition';
           phone: phoneField,
           address: addressField,
           city: cityField,
-          profilePicture: userData.userProfile.profilePicture
+          profilePicture: user.userProfile.profilePicture
         }),
         credentials: 'include'
       });
@@ -113,10 +94,23 @@ import { fade, fly, scale,blur } from 'svelte/transition';
       // Check if response is successful (204 No Content as per OpenAPI)
       if (response.ok) {
         // Update local user data
-        user = { ...user, profileName: profileNameField, email: emailField };
+        user = {
+          ...user,
+          userProfile: {
+            ...user.userProfile,
+            name: profileNameField,
+            email: emailField,
+            phone: phoneField,
+            address: addressField,
+            city: cityField
+          }
+        };
         isEditing = false;
         message = 'Profil berhasil diperbarui';
         messageType = 'success';
+
+        // Refresh page data to sync displayData
+        await invalidateAll();
 
         // Update auth store
         await authStore.checkAuth();
@@ -209,11 +203,22 @@ import { fade, fly, scale,blur } from 'svelte/transition';
           closePhotoDialog();
         }, 1500);
 
-        // Increment refresh key to force image reload
-        photoRefreshKey++;
+        // Update local user profile picture
+        user = { ...user, userProfile: { ...user.userProfile, profilePicture: result.fileName } };
+
+        // Force avatar image refresh
+        imageRefreshKey = Date.now();
 
         // Update auth store to refresh navbar photo
         authStore.refreshProfilePhoto();
+
+        // Wait a bit for navbar to update, then reload profile data and page
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        await authStore.checkAuth();
+
+        // Reload page to reflect latest server state
+        await invalidateAll();
       } else {
         photoMessage = result.message || 'Gagal mengupload foto.';
         photoMessageType = 'error';
@@ -253,7 +258,7 @@ import { fade, fly, scale,blur } from 'svelte/transition';
           {#if user.id}
             <img
               class="w-32 h-32 rounded-full object-cover"
-              src="{buildApiUrl(`api/users/profile-photo/${user.id}`)}?t={photoRefreshKey}"
+              src="{buildApiUrl(`api/users/profile-photo/${user.id}`)}?t={imageRefreshKey}"
               alt="Profile photo"
               onerror={() => {
                 // Hide image and show fallback on error
@@ -469,22 +474,14 @@ import { fade, fly, scale,blur } from 'svelte/transition';
           <span class="font-medium text-on-surface-variant">Role:</span>
           <span class="text-on-surface ml-2">{profile.roleName}</span>
         </div>
-        {#if isUserData}
-          {@const userData = user as UserData}
-          <div class="md:col-span-2">
-            <span class="font-medium text-on-surface-variant">Dibuat:</span>
-            <span class="text-on-surface ml-2">{new Date(userData.createdAt).toLocaleDateString('id-ID')}</span>
-          </div>
-          <div class="md:col-span-2">
-            <span class="font-medium text-on-surface-variant">Diperbarui:</span>
-            <span class="text-on-surface ml-2">{new Date(userData.updatedAt).toLocaleDateString('id-ID')}</span>
-          </div>
-        {:else}
-          <div class="md:col-span-2">
-            <span class="font-medium text-on-surface-variant">Terakhir Diperbarui:</span>
-            <span class="text-on-surface ml-2">-</span>
-          </div>
-        {/if}
+        <div class="md:col-span-2">
+          <span class="font-medium text-on-surface-variant">Dibuat:</span>
+          <span class="text-on-surface ml-2">{new Date(user.createdAt).toLocaleDateString('id-ID')}</span>
+        </div>
+        <div class="md:col-span-2">
+          <span class="font-medium text-on-surface-variant">Diperbarui:</span>
+          <span class="text-on-surface ml-2">{new Date(user.updatedAt).toLocaleDateString('id-ID')}</span>
+        </div>
       </div>
     </div>
   </Card>

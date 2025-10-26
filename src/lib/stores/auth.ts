@@ -97,11 +97,11 @@ function createAuthStore() {
                     update(state => ({ ...state, user, isLoading: false, isAuthenticated: true }));
                     return true;
                 } else {
-                    update(state => ({ ...state, user: null, isLoading: false, isAuthenticated: false }));
+                    update(state => ({ ...state, user: null, isLoading: false, isAuthenticated: false, profilePhotoRefreshKey: 0 }));
                     return false;
                 }
             } catch {
-                update(state => ({ ...state, user: null, isLoading: false, isAuthenticated: false }));
+                update(state => ({ ...state, user: null, isLoading: false, isAuthenticated: false, profilePhotoRefreshKey: 0 }));
                 return false;
             }
         },
