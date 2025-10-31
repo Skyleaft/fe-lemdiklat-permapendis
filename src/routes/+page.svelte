@@ -4,9 +4,13 @@ import FeatureCard from "$lib/components/ui/FeatureCard.svelte";
 import SkemaCard from "$lib/components/ui/SkemaCard.svelte";
 import TestimonialCard from "$lib/components/ui/TestimonialCard.svelte";
 import NewsCard from "$lib/components/ui/NewsCard.svelte";
+import { truncateContent, formatDate } from '$lib/utils/text';
+import type { PageData } from './$types';
 
 import { fade, fly, scale,blur } from 'svelte/transition';
 import { onMount } from 'svelte';
+
+export let data: PageData;
 
 let heroSection: HTMLElement | undefined;
 
@@ -70,23 +74,43 @@ onMount(() => {
   <div class="w-full md:flex-1 flex items-center justify-center mb-4 md:mb-0">
     {#if galleryVisible}
       <div 
-        class="grid grid-cols-2 grid-rows-2 gap-2 sm:gap-3 w-52 h-52 sm:w-64 sm:h-64"
-        in:blur={{ duration: 400, delay: 300 }}
+        class="grid grid-cols-3 grid-rows-2 gap-3 sm:gap-4 w-80 h-56 sm:w-96 sm:h-64"
       >
         <img
-          src="https://source.unsplash.com/random/200x200?education,1"
+          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=180&h=140&fit=crop&crop=center"
           alt="Gallery 1"
-          class="row-span-2 col-span-1 object-cover rounded-xl w-full h-full shadow"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 300 }}
         />
         <img
-          src="https://source.unsplash.com/random/300x140?education,2"
+          src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=180&h=140&fit=crop&crop=center"
           alt="Gallery 2"
-          class="row-span-1 col-span-1 object-cover rounded-xl w-full h-full shadow"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 400 }}
         />
         <img
-          src="https://source.unsplash.com/random/300x110?education,3"
+          src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=180&h=140&fit=crop&crop=center"
           alt="Gallery 3"
-          class="row-span-1 col-span-1 object-cover rounded-xl w-full h-full shadow"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 500 }}
+        />
+        <img
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=180&h=140&fit=crop&crop=center"
+          alt="Gallery 4"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 600 }}
+        />
+        <img
+          src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=180&h=140&fit=crop&crop=center"
+          alt="Gallery 5"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 700 }}
+        />
+        <img
+          src="https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=180&h=140&fit=crop&crop=center"
+          alt="Gallery 6"
+          class="object-cover rounded-xl w-full h-full shadow"
+          in:scale={{ duration: 400, delay: 800 }}
         />
       </div>
     {/if}
@@ -103,7 +127,7 @@ onMount(() => {
       <p 
         class="text-base md:text-lg text-primary-dim mb-8 text-center max-w-2xl mx-auto"
       >
-        Karena komitmen kami untuk meningkatkan kebertrimaan Sertifikat Kompetensi oleh industri baik di tingkat nasional maupun internasional.
+        Karena komitmen kami untuk meningkatkan Lembaga Pendidikan dan Kompetensi oleh industri baik di tingkat nasional maupun internasional.
       </p>
       <div 
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -151,34 +175,34 @@ onMount(() => {
       <h2 
         class="text-2xl md:text-3xl font-bold text-primary mb-4 text-center"
       >
-        Skema Uji Kompetensi di LSP Kami
+        Skema Pendidikan Dan Pelatihan
       </h2>
       <p 
         class="text-base md:text-lg text-primary-dim mb-8 text-center max-w-2xl mx-auto"
       >
-        Berikut adalah beberapa skema uji kompetensi yang tersedia di LSP kami, dirancang untuk memenuhi kebutuhan industri dan meningkatkan daya saing peserta.
+        Berikut adalah beberapa skema Pelatihan yang tersedia, dirancang untuk memenuhi kebutuhan industri dan meningkatkan daya saing peserta.
       </p>
       <div 
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-6xl mx-auto"
       >
-      <SkemaCard 
-        imgAlt="Skema Teknisi Jaringan Komputer" 
-        imgSrc="/img/img1.jpeg" 
-        title="Skema Teknisi Jaringan Komputer"
-        subtitle="Uji kompetensi bagi yang ingin membuktikan kemampuan di bidang instalasi & pengelolaan jaringan komputer secara profesional." 
-      />
-      <SkemaCard 
-        imgAlt="Skema Programmer Aplikasi" 
-        imgSrc="/img/img2.jpeg" 
-        title="Skema Programmer Aplikasi"
-        subtitle="Sertifikasi untuk kompetensi di pengembangan aplikasi, baik web, mobile, maupun desktop dengan standar industri terkini."
-      />
-      <SkemaCard 
-        imgAlt="Skema Digital Marketing" 
-        imgSrc="/img/img3.jpeg" 
-        title="Skema Digital Marketing"
-        subtitle="Validasi kemampuan Anda dalam strategi pemasaran digital, pengelolaan kampanye, dan analisis media sosial."
-      />
+        <SkemaCard
+          title="Pelatihan Kepala Sekolah MI/SD"
+          subtitle="Program pelatihan komprehensif untuk kepala sekolah MI/SD dalam kepemimpinan pendidikan, manajemen sekolah, dan pengembangan kurikulum tingkat dasar."
+          imgSrc="https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=400&h=300&fit=crop&crop=center"
+          imgAlt="Pelatihan Kepala Sekolah MI/SD"
+        />
+        <SkemaCard
+          title="Pelatihan Kepala Sekolah SMP"
+          subtitle="Pelatihan khusus kepala sekolah SMP meliputi manajemen remaja, pengembangan karakter siswa, dan strategi pembelajaran efektif tingkat menengah pertama."
+          imgSrc="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=300&fit=crop&crop=center"
+          imgAlt="Pelatihan Kepala Sekolah SMP"
+        />
+        <SkemaCard
+          title="Pelatihan Kepala Sekolah SMA/SMK"
+          subtitle="Program pelatihan untuk kepala sekolah SMA/SMK fokus pada persiapan siswa ke perguruan tinggi, link and match industri, dan pengembangan soft skills."
+          imgSrc="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop&crop=center"
+          imgAlt="Pelatihan Kepala Sekolah SMA/SMK"
+        />
       </div>
   </section>
 
@@ -191,31 +215,31 @@ onMount(() => {
   <p 
     class="text-base md:text-lg text-primary-dim  mb-8 text-center max-w-2xl mx-auto"
   >
-    Testimoni dari para alumni yang telah mengikuti uji kompetensi di LSP kami. Mereka telah merasakan manfaatnya untuk karir dan pengembangan diri.
+    Testimoni dari para alumni yang telah mengikuti pelatihan dari kami. Mereka telah merasakan manfaatnya untuk karir dan pengembangan diri.
   </p>
   <div 
     class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
   >
     <TestimonialCard
-      name="Ani Rahmawati"
-      role="Programmer Aplikasi"
-      testimonial="Pengalaman uji kompetensi di LSP ini sangat menyenangkan. Prosesnya profesional & membuat saya lebih percaya diri di dunia kerja."
-      imageSrc="/img/alumni1.jpg"
-      imageAlt="Alumni 1"
+      name="Dra. Siti Nurhaliza, M.Pd"
+      role="Kepala SD Negeri 15 Jakarta"
+      testimonial="Pelatihan kepemimpinan untuk kepala sekolah SD sangat membantu saya dalam mengelola sekolah dengan lebih efektif. Materi yang diberikan sangat aplikatif dan sesuai dengan tantangan di lapangan."
+      imageSrc="https://ui-avatars.com/api/?name=Siti+Nurhaliza&background=6366f1&color=fff&size=100"
+      imageAlt="Dra. Siti Nurhaliza"
     />
     <TestimonialCard
-      name="Budi Santoso"
-      role="Teknisi Jaringan Komputer"
-      testimonial="Selain uji kompetensi, saya juga mendapatkan jejaring alumni yang luas dan sangat bermanfaat untuk perkembangan karir saya."
-      imageSrc="/img/alumni2.jpg"
-      imageAlt="Alumni 2"
+      name="Ahmad Fauzi, S.Pd, M.M"
+      role="Kepala SMP Negeri 8 Bandung"
+      testimonial="Program pelatihan untuk kepala sekolah SMP memberikan wawasan baru tentang manajemen remaja dan pengembangan karakter. Sangat bermanfaat untuk meningkatkan kualitas pendidikan di sekolah."
+      imageSrc="https://ui-avatars.com/api/?name=Ahmad+Fauzi&background=059669&color=fff&size=100"
+      imageAlt="Ahmad Fauzi"
     />
     <TestimonialCard
-      name="Clara Dewi"
-      role="Digital Marketing"
-      testimonial="Materi dan metode uji sangat relevan dengan kebutuhan industri saat ini. Sertifikasi dari LSP ini menjadi nilai plus di CV saya."
-      imageSrc="/img/alumni3.jpg"
-      imageAlt="Alumni 3"
+      name="Dr. Maya Sari, M.Pd"
+      role="Kepala SMK Negeri 2 Surabaya"
+      testimonial="Pelatihan kepala sekolah SMA/SMK sangat membantu dalam memahami link and match dengan industri. Sekarang sekolah kami lebih siap menyiapkan siswa untuk dunia kerja dan perguruan tinggi."
+      imageSrc="https://ui-avatars.com/api/?name=Maya+Sari&background=dc2626&color=fff&size=100"
+      imageAlt="Dr. Maya Sari"
     />
   </div>
 </section>
@@ -234,31 +258,27 @@ onMount(() => {
   <div 
     class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
   >
-    <NewsCard
-      title="Sukses! Sertifikasi Batch 3 Telah Dilaksanakan"
-      excerpt="Kegiatan sertifikasi batch ke-3 berlangsung lancar di Jakarta, diikuti 50 peserta dari berbagai institusi. Terima kasih atas partisipasi semuanya!"
-      imageSrc="/img/berita1.jpg"
-      imageAlt="Kegiatan Sertifikasi Batch 3"
-      date="20 Juni 2024"
-    />
-    <NewsCard
-      title="Lemdiklat Permapendis Jalin Kerjasama dengan Industri TIK"
-      excerpt="Penandatanganan MoU dengan perusahaan teknologi terkemuka untuk meningkatkan relevansi materi dan penyerapan tenaga kerja bersertifikat."
-      imageSrc="/img/berita2.jpg"
-      imageAlt="Kerjasama Baru"
-      date="12 Juni 2024"
-    />
-    <NewsCard
-      title="Pelatihan Digital Marketing untuk Alumni"
-      excerpt="Alumni peserta LSP mendapatkan pelatihan gratis tentang teknik digital marketing modern sebagai bagian pengembangan kompetensi berkelanjutan."
-      imageSrc="/img/berita3.jpg"
-      imageAlt="Pelatihan Digital Marketing"
-      date="5 Juni 2024"
-    />
+    {#if data.articles && data.articles.length > 0}
+      {#each data.articles as article}
+        <NewsCard
+          title={article.title}
+          excerpt={truncateContent(article.content, 120)}
+          imageSrc={article.thumbnail ? `/api/articles/thumbnail/${article.thumbnail}` : '/img/News-rafiki.svg'}
+          imageAlt={article.title}
+          date={formatDate(article.updatedAt)}
+          href="/articles/{article.slug}"
+          category={article.categoryName}
+        />
+      {/each}
+    {:else}
+      <div class="col-span-full text-center py-8">
+        <p class="text-on-surface-variant">Belum ada berita terbaru.</p>
+      </div>
+    {/if}
   </div>
   <div class="mt-8 flex justify-center">
     <a
-      href="/berita"
+      href="/articles"
       class="px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-primary-dim transition"
       >Berita lainnya</a
     >

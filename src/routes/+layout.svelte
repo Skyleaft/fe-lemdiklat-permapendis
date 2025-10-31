@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
+
 	import Navbar from '$lib/components/layout/Navbar.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import DashboardSidebar from '$lib/components/layout/DashboardSidebar.svelte';
@@ -30,41 +30,22 @@
 	export function toggleTheme(e: MouseEvent) {
 		isDark = !isDark;
 		localStorage.setItem('m3-theme', isDark ? 'dark' : 'light');
-		// Posisi klik relatif ke viewport
+		
+		// Ripple animation
 		const x = e.clientX;
 		const y = e.clientY;
-
 		const rippleEl = document.createElement('div');
 		rippleEl.className = 'theme-ripple';
 		document.body.appendChild(rippleEl);
-
-		// Posisi ripple
 		rippleEl.style.left = `${x}px`;
 		rippleEl.style.top = `${y}px`;
-
-		const rippleColor = !isDark ? 'rgb(243 243 250)' : 'rgb(17 19 24)';
-
-		rippleEl.style.backgroundColor = rippleColor;
-
-		// Mulai animasi scale
+		rippleEl.style.backgroundColor = isDark ? 'rgb(11 15 12)' : 'rgb(248 250 243)';
+		
 		requestAnimationFrame(() => rippleEl.classList.add('expand'));
-
-		// Ganti tema setelah ripple cukup besar
-		setTimeout(() => {
-			applyThemeAttr(isDark);
-		}, 300);
-
-		// Setelah tema berganti, fade out ripple
-		setTimeout(() => {
-			rippleEl.classList.add('fade');
-		}, 400);
-
-		// Hapus ripple setelah animasi selesai
-		setTimeout(() => {
-			rippleEl.remove();
-		}, 1300);
-
-		//applyThemeAttr(isDark);
+		
+		setTimeout(() => applyThemeAttr(isDark), 200);
+		setTimeout(() => rippleEl.classList.add('fade'), 300);
+		setTimeout(() => rippleEl.remove(), 1000);
 	}
 
 	onMount(async () => {
@@ -83,33 +64,9 @@
 		await authStore.checkAuth();
 	});
 
-	let sourceColor = $state(13679871);
-	let variant: Variant = $state(Variant.TONAL_SPOT);
-	let specVersion: '2021' | '2025' = $state('2025');
-	let contrast = $state(0);
-	let density = $state(0);
-
-	let schemes = $derived.by(() => {
-		const commonArgs = {
-			sourceColorHct: Hct.fromInt(sourceColor),
-			contrastLevel: contrast,
-			specVersion
-		} as const;
-		const result = {} as Record<Variant, { light: DynamicScheme; dark: DynamicScheme }>;
-		for (const { id } of variants) {
-			result[id] = {
-				light: new DynamicScheme({ ...commonArgs, variant: id, isDark: false }),
-				dark: new DynamicScheme({ ...commonArgs, variant: id, isDark: true })
-			};
-		}
-		return result;
-	});
-	let { light, dark } = $derived(schemes[variant]);
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
+
 
 {#if !$page.url.pathname.startsWith('/dashboard')}
 	<Navbar {toggleTheme} />

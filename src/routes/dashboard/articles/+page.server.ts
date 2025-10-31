@@ -98,7 +98,7 @@ export async function load({ fetch, url }) {
         pageSize: parseInt(url.searchParams.get('pageSize') || '10'),
         sort: url.searchParams.get('sort') || 'updatedAt',
         order: url.searchParams.get('order') || 'desc',
-        filter: 'isPublished:true' // Only show published articles
+        filter: ''
     };
 
     // Get articles

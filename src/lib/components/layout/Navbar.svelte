@@ -11,6 +11,7 @@
 	import iconHome from '@ktibow/iconset-material-symbols/home';
 	import iconInfo from '@ktibow/iconset-material-symbols/info';
 	import iconContact from '@ktibow/iconset-material-symbols/contact-support';
+	import iconArticle from '@ktibow/iconset-material-symbols/article';
 	import LoginDialog from '$lib/components/ui/LoginDialog.svelte';
 	import { authStore } from '$lib/stores/auth';
 	import { buildApiUrl } from '$lib/utils/api';
@@ -18,14 +19,26 @@
 	type NavLink = { href: string; icon: any; label: string };
 	const navLinks: NavLink[] = [
 		{ href: '/', icon: iconHome, label: 'Beranda' },
+		{ href: '/articles', icon: iconArticle, label: 'Artikel' },
 		{ href: '/about', icon: iconInfo, label: 'Tentang' },
 		{ href: '/contact', icon: iconContact, label: 'Kontak' }
 	];
 
 	let { toggleTheme }: { toggleTheme: (e: MouseEvent) => void } = $props();
 
-	let searchText = '';
 	let showDark = $state(false);
+
+	// Sync showDark with actual theme
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			const saved = localStorage.getItem('m3-theme');
+			if (saved) {
+				showDark = saved === 'dark';
+			} else {
+				showDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			}
+		}
+	});
 
 	let isLogining = $state(false);
 
@@ -77,7 +90,10 @@
 
 <header class="sticky top-0 z-50 bg-surface/80 shadow-1 backdrop-blur">
 	<div class="mx-auto flex items-center justify-between gap-2 px-4 py-2">
-		<a href="/" class="font-bold tracking-tight text-primary">Lemdiklat Permapendis</a>
+		<a href="/" class="flex items-center gap-2 font-bold tracking-tight text-primary">
+			<img src="/img/logo.png" alt="Logo" class="h-12 w-12" />
+			Lemdiklat Permapendis
+		</a>
 
 		<LoginDialog bind:open={isLogining} />
 
@@ -298,6 +314,21 @@
 						>
 					</div>
 				{/if}
+
+				<!-- Theme Toggle -->
+				<div class="flex items-center justify-between border-t border-outline-variant px-3 py-2">
+					<span class="text-sm text-on-surface-variant">Mode Gelap</span>
+					<Button
+						variant="tonal"
+						iconType="full"
+						onclick={(e: MouseEvent) => {
+							showDark = !showDark;
+							toggleTheme(e);
+						}}
+					>
+						<Icon icon={showDark ? iconLight : iconDark} />
+					</Button>
+				</div>
 
 				<!-- Close Button -->
 				<div class="pt-1">

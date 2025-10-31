@@ -48,6 +48,57 @@ export async function createArticle(data: CreateArticleRequest): Promise<Respons
     return response;
 }
 
+export async function createArticleWithThumbnail(data: CreateArticleRequest, thumbnailFile: File): Promise<Response> {
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('categoryId', data.categoryId.toString());
+    if (data.content) formData.append('content', data.content);
+    if (data.author) formData.append('author', data.author);
+    formData.append('thumbnailFile', thumbnailFile);
+
+    const response = await fetch(buildApiUrl('/api/articles/with-thumbnail'), {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to create article with thumbnail: ${response.status} ${response.statusText}`);
+    }
+
+    return response;
+}
+
+export async function uploadThumbnail(thumbnailFile: File): Promise<{ fileName: string; message: string }> {
+    const formData = new FormData();
+    formData.append('thumbnail', thumbnailFile);
+
+    const response = await fetch(buildApiUrl('/api/articles/thumbnail'), {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to upload thumbnail: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export async function deleteArticle(id: number): Promise<Response> {
+    const response = await fetch(buildApiUrl(`/api/articles/${id}`), {
+        method: 'DELETE',
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to delete article: ${response.status} ${response.statusText}`);
+    }
+
+    return response;
+}
+
 export async function getArticleCategories(): Promise<ArticleCategory[]> {
     const response = await fetch(buildApiUrl('/api/article-categories'), {
         method: 'GET',

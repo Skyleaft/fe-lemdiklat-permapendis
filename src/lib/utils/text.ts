@@ -6,8 +6,13 @@
  * Truncate content to a specified maximum length and append ellipsis if needed
  */
 export function truncateContent(content: string, maxLength: number = 150): string {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
+    // Strip HTML tags for length calculation
+    const textOnly = content.replace(/<[^>]*>/g, '');
+    if (textOnly.length <= maxLength) return content;
+    
+    // Truncate text and add ellipsis
+    const truncated = textOnly.substring(0, maxLength) + '...';
+    return truncated;
 }
 
 /**

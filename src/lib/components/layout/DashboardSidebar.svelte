@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { slide } from 'svelte/transition';
 	import { Icon } from 'm3-svelte';
 	import iconDashboard from '@ktibow/iconset-material-symbols/dashboard';
 	import iconCourses from '@ktibow/iconset-material-symbols/school';
@@ -13,6 +14,7 @@
 	import iconLogout from '@ktibow/iconset-material-symbols/logout';
 	import iconExpand from '@ktibow/iconset-material-symbols/expand-more';
 	import iconCollapse from '@ktibow/iconset-material-symbols/expand-less';
+	import iconHome from '@ktibow/iconset-material-symbols/home';
 	import { authStore } from '$lib/stores/auth';
 
 	type SubNavItem = {
@@ -31,11 +33,11 @@
 
 	const navItems: NavItem[] = [
 		{ href: '/dashboard', icon: iconDashboard, label: 'Beranda' },
-		{ href: '/dashboard/articles', icon: iconArticles, label: 'Artikel' },
 		{ href: '/dashboard/courses', icon: iconCourses, label: 'Kursus' },
 		{ href: '/dashboard/exams', icon: iconExams, label: 'Ujian' },
 		{ href: '/dashboard/certificates', icon: iconCertificates, label: 'Sertifikat' },
 		{ href: '/dashboard/schedule', icon: iconSchedule, label: 'Jadwal' },
+		{ href: '/dashboard/articles', icon: iconArticles, label: 'Artikel' },
 		{
 			icon: iconProfile,
 			label: 'Profil',
@@ -47,7 +49,8 @@
 				},
 				{ icon: iconLogout, label: 'Logout', action: async () => await logout() }
 			]
-		}
+		},
+		{ href: '/dashboard/settings', icon: iconSettings, label: 'Pengaturan' }
 	];
 
 	let openMenus = $state<Set<string>>(new Set());
@@ -92,7 +95,7 @@
 	}
 </script>
 
-<div class="dashboard-sidebar flex h-full flex-col border-r border-outline-variant bg-surface">
+<div class="dashboard-sidebar flex h-full flex-col bg-surface" transition:slide={{ axis: 'x', duration: 300 }}>
 	<!-- User Info section -->
 	<div class="border-b border-outline-variant p-4">
 		<div class="flex items-center gap-3">
@@ -110,7 +113,12 @@
 
 	<!-- Navigation Items -->
 	<nav class="flex-1 space-y-1 p-2">
-		{#each navItems as item}
+		{#each navItems as item, index}
+			<!-- Add divider before profile section -->
+			{#if item.label === 'Profil'}
+				<div class="border-t border-outline-variant mx-2 my-2"></div>
+			{/if}
+			
 			{#if item.children}
 				<!-- Item with sub-menu -->
 				<div class="nav-item">
@@ -167,6 +175,17 @@
 			{/if}
 		{/each}
 	</nav>
+
+	<!-- Back to Main Page Button -->
+	<div class="border-t border-outline-variant p-2">
+		<a
+			href="/"
+			class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+		>
+			<Icon icon={iconHome} class="h-5 w-5" />
+			<span class="text-sm font-medium">Kembali ke Halaman Utama</span>
+		</a>
+	</div>
 
 	<!-- Footer info -->
 	<div class="border-t border-outline-variant p-4">

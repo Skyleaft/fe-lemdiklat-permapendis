@@ -10,7 +10,6 @@
 	.dashboard-content {
 		margin-left: 280px; /* Margin for sidebar width */
 		padding: 1rem;
-		background: var(--m3-surface, #fff);
 		min-height: 100vh;
 	}
 

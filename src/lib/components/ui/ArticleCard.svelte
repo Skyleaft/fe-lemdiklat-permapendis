@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import type { Article } from '$lib/types';
+	import { Button, Icon } from 'm3-svelte';
+	import type { Article, ArticleCategory } from '$lib/types';
+	import iconEdit from '@ktibow/iconset-material-symbols/edit';
+	import Chip from '$lib/components/ui/Chip.svelte';
+
 	import { truncateContent, formatDate } from '$lib/utils/text';
 
 	export let article: Article;
 	export let index: number;
 	export let onEdit: (article: Article) => void;
+	export let categories: ArticleCategory[] = [];
+
+	$: categoryName = categories.find(c => c.id === article.categoryId)?.name || 'Uncategorized';
 
 	function handleImageError(event: Event) {
 		const img = event.target as HTMLImageElement;
@@ -15,8 +22,19 @@
 	}
 </script>
 
-<div class="h-full overflow-hidden rounded-2xl transition-shadow hover:shadow-lg">
-	<div class="aspect-video bg-surface-container-high p-4">
+<div
+	class="overflow-hidden rounded-2xl transition-all duration-500 hover:bg-surface-container-lowest/70 hover:shadow-lg"
+>
+	<div class="aspect-video bg-surface-container-high p-4 relative">
+		<div class="absolute top-2 left-2 z-10">
+			<Chip label={categoryName} variant="default" />
+		</div>
+		<div class="absolute top-2 right-2 z-10">
+			<Chip 
+				label={article.isPublished ? 'Published' : 'Draft'} 
+				variant={article.isPublished ? 'success' : 'warning'} 
+			/>
+		</div>
 		{#if article.thumbnail}
 			<img
 				src="/api/articles/thumbnail/{article.thumbnail}"
@@ -53,9 +71,9 @@
 			{article.title}
 		</h3>
 
-		<p class="content line-clamp-3 text-sm text-on-surface-variant" title={article.content}>
-			{truncateContent(article.content)}
-		</p>
+		<div class="content line-clamp-3 text-sm text-on-surface-variant" title={article.content}>
+			{@html truncateContent(article.content)}
+		</div>
 
 		<div class="metadata mb-4 flex items-center gap-2 text-sm text-on-surface-variant">
 			<span>Oleh {article.author}</span>
@@ -63,13 +81,16 @@
 			<time datetime={article.updatedAt}>{formatDate(article.updatedAt)}</time>
 		</div>
 
-		<button
-			class="action-button w-full rounded-lg border border-outline px-4 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary-container"
-			onclick={() => onEdit(article)}
-			aria-label="Edit artikel {article.title}"
-		>
-			Edit
-		</button>
+		<div class="flex justify-end">
+			<Button
+				variant="text"
+				iconType="full"
+				onclick={() => onEdit(article)}
+				aria-label="Edit artikel {article.title}"
+			>
+				<Icon icon={iconEdit}></Icon>
+			</Button>
+		</div>
 	</div>
 </div>
 
@@ -91,5 +112,10 @@
 	.action-button:hover {
 		background-color: var(--color-primary-container, rgba(0, 0, 0, 0.1));
 		color: var(--color-on-primary-container, inherit);
+	}
+
+	.action-button.text-error:hover {
+		background-color: var(--color-error-container, rgba(255, 0, 0, 0.1));
+		color: var(--color-on-error-container, inherit);
 	}
 </style>

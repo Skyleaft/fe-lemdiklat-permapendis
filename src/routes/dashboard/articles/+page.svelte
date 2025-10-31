@@ -3,7 +3,7 @@
 	import { Card, Button, TextField } from 'm3-svelte';
 	import ArticleModal from '$lib/components/ui/ArticleModal.svelte';
 	import ArticleCard from '$lib/components/ui/ArticleCard.svelte';
-	import { createArticle, updateArticle, type ArticleCategory, buildApiUrl } from '$lib/utils/api';
+	import { createArticle, createArticleWithThumbnail, updateArticle, uploadThumbnail, deleteArticle, type ArticleCategory, type CreateArticleRequest, type UpdateArticleRequest, buildApiUrl } from '$lib/utils/api';
 	import type { PageData } from './$types';
 	import type { Article, FindRequest } from '$lib/types';
 
@@ -57,7 +57,7 @@
 			pageSize: searchParams.pageSize || 10,
 			sort: searchParams.sort || 'updatedAt',
 			order: searchParams.order || 'desc',
-			filter: 'isPublished:true'
+			filter: ''
 		};
 
 		isLoading = true;
@@ -104,7 +104,7 @@
 			pageSize: searchParams.pageSize || 10,
 			sort: searchParams.sort || 'updatedAt',
 			order: searchParams.order || 'desc',
-			filter: 'isPublished:true'
+			filter: ''
 		};
 
 		isLoading = true;
@@ -145,25 +145,30 @@
 	}
 
 	async function handleSaveArticle(
-		articleData:
-			| {
-					title: string;
-					categoryId: number;
-					content: string;
-			  }
-			| any
+		articleData: CreateArticleRequest | UpdateArticleRequest,
+		thumbnailFile?: File
 	) {
 		try {
 			isSavingArticle = true;
 
 			if (mode === 'create') {
-				await createArticle({
-					title: articleData.title,
-					categoryId: articleData.categoryId,
-					content: articleData.content
-				});
+				if (thumbnailFile) {
+					await createArticleWithThumbnail(articleData as CreateArticleRequest, thumbnailFile);
+				} else {
+					await createArticle(articleData as CreateArticleRequest);
+				}
 			} else if (mode === 'edit' && selectedArticle) {
-				await updateArticle(selectedArticle.id, articleData);
+				let thumbnailFileName = (articleData as UpdateArticleRequest).thumbnail;
+				
+				if (thumbnailFile) {
+					const uploadResult = await uploadThumbnail(thumbnailFile);
+					thumbnailFileName = uploadResult.fileName;
+				}
+				
+				await updateArticle(selectedArticle.id, {
+					...articleData as UpdateArticleRequest,
+					thumbnail: thumbnailFileName
+				});
 			}
 
 			// Refresh articles list after successful save
@@ -184,6 +189,20 @@
 		selectedArticle = null;
 		mode = 'create';
 	}
+
+	async function handleDeleteArticle(article: Article) {
+		if (!confirm(`Apakah Anda yakin ingin menghapus artikel "${article.title}"?`)) {
+			return;
+		}
+
+		try {
+			await deleteArticle(article.id);
+			window.location.reload();
+		} catch (error) {
+			console.error('Failed to delete article:', error);
+			alert('Gagal menghapus artikel. Silakan coba lagi.');
+		}
+	}
 </script>
 
 <!-- Article Modal -->
@@ -194,6 +213,7 @@
 	article={selectedArticle}
 	onSave={handleSaveArticle}
 	onCancel={handleCancelArticle}
+	onDelete={handleDeleteArticle}
 />
 
 <div class="mx-auto max-w-7xl">
@@ -289,7 +309,7 @@
 			in:fly={{ y: 20, duration: 300 }}
 		>
 			{#each articles as article, index}
-				<ArticleCard {article} {index} onEdit={handleEditArticle} />
+				<ArticleCard {article} {index} {categories} onEdit={handleEditArticle} />
 			{/each}
 		</div>
 

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Card, Button, TextFieldOutlined, SelectOutlined } from 'm3-svelte';
+	import { Card, Button, TextFieldOutlined, SelectOutlined, Checkbox } from 'm3-svelte';
 	import { browser } from '$app/environment';
-	import type { ArticleCategory, UpdateArticleRequest } from '$lib/utils/api';
+	import type { ArticleCategory, UpdateArticleRequest, CreateArticleRequest } from '$lib/utils/api';
+	import { createArticleWithThumbnail, uploadThumbnail } from '$lib/utils/api';
 	import type { Article } from '$lib/types';
 	import { fade, fly, blur } from 'svelte/transition';
 
@@ -12,15 +13,20 @@
 	export let categories: ArticleCategory[] = [];
 	export let article: Article | null = null;
 	export let onSave: (
-		article: { title: string; categoryId: number; content: string } | UpdateArticleRequest
+		article: CreateArticleRequest | UpdateArticleRequest,
+		thumbnailFile?: File
 	) => void;
 	export let onCancel: () => void;
+	export let onDelete: ((article: Article) => void) | null = null;
 
 	let quillContainer: HTMLElement;
 	let quill: Quill | null = null;
 	let title = '';
 	let content = '';
 	let categoryId: string = '';
+	let thumbnailFile: File | null = null;
+	let thumbnailPreview: string | null = null;
+	let isPublished = false;
 
 	$: options = categories.map((c) => ({
 		text: c.name,
@@ -31,6 +37,9 @@
 		title = article.title;
 		content = article.content;
 		categoryId = article.categoryId.toString();
+		thumbnailFile = null;
+		thumbnailPreview = null;
+		isPublished = article.isPublished;
 	}
 
 	$: if (quillContainer && open && !quill && browser) {
@@ -80,15 +89,18 @@
 		const categoryIdNum = parseInt(categoryId);
 
 		if (mode === 'create') {
-			onSave({ title, categoryId: categoryIdNum, content });
+			onSave({ title, categoryId: categoryIdNum, content }, thumbnailFile || undefined);
 		} else if (mode === 'edit' && article) {
-			onSave({
-				title,
-				categoryId: categoryIdNum,
-				content,
-				isPublished: article.isPublished,
-				thumbnail: article.thumbnail
-			});
+			onSave(
+				{
+					title,
+					categoryId: categoryIdNum,
+					content,
+					isPublished,
+					thumbnail: article.thumbnail
+				},
+				thumbnailFile || undefined
+			);
 		}
 		resetForm();
 	}
@@ -103,8 +115,24 @@
 		title = '';
 		content = '';
 		categoryId = '';
+		thumbnailFile = null;
+		thumbnailPreview = null;
+		isPublished = false;
 		if (quill) {
 			quill.root.innerHTML = '';
+		}
+	}
+
+	function handleThumbnailChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+		if (file) {
+			thumbnailFile = file;
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				thumbnailPreview = e.target?.result as string;
+			};
+			reader.readAsDataURL(file);
 		}
 	}
 
@@ -134,16 +162,39 @@
 
 					<div class="space-y-6">
 						<div class="flex w-full flex-col">
-							<TextFieldOutlined
-								label="Judul Artikel"
-								type="text"
-								placeholder="Masukkan judul artikel"
-								bind:value={title}
-							/>
+							<TextFieldOutlined label="Judul Artikel" type="text" bind:value={title} />
 						</div>
 
 						<div class="flex w-full flex-col">
 							<SelectOutlined label="Kategori Artikel" bind:value={categoryId} {options} />
+						</div>
+
+						{#if mode === 'edit'}
+							<div class="flex items-center gap-3">
+								<label>
+									<Checkbox
+										><input type="checkbox" bind:checked={isPublished} /></Checkbox>
+									Publikasikan artikel
+								</label>
+							</div>
+						{/if}
+
+						<div class="flex w-full flex-col">
+							<TextFieldOutlined
+								label="Thumbnail Artikel"
+								type="File"
+								accept="image/*"
+								onchange={handleThumbnailChange}
+							/>
+							{#if thumbnailPreview}
+								<div class="mt-2">
+									<img
+										src={thumbnailPreview}
+										alt="Preview"
+										class="h-32 w-32 rounded-lg object-cover"
+									/>
+								</div>
+							{/if}
 						</div>
 
 						<div>
@@ -157,9 +208,18 @@
 							</div>
 						</div>
 					</div>
-					<div class="mt-8 flex justify-end gap-4">
-						<Button variant="outlined" onclick={handleCancel}>Batal</Button>
-						<Button variant="filled" onclick={handleSave}>Simpan Artikel</Button>
+					<div class="mt-8 flex justify-between">
+						<div>
+							{#if mode === 'edit' && article && onDelete}
+								<Button variant="tonal" color="text-error" onclick={() => onDelete?.(article)}
+									>Hapus Artikel</Button
+								>
+							{/if}
+						</div>
+						<div class="flex gap-4">
+							<Button variant="outlined" onclick={handleCancel}>Batal</Button>
+							<Button variant="filled" onclick={handleSave}>Simpan Artikel</Button>
+						</div>
 					</div>
 				</div>
 			</Card>
