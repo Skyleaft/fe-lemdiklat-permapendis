@@ -74,16 +74,16 @@ onMount(() => {
   <div class="w-full md:flex-1 flex items-center justify-center mb-4 md:mb-0">
     {#if galleryVisible}
       <div 
-        class="grid grid-cols-3 grid-rows-2 gap-3 sm:gap-4 w-80 h-56 sm:w-96 sm:h-64"
+        class="grid grid-cols-3 grid-rows-2 gap-3 sm:gap-4 w-full h-56 sm:w-96 sm:h-64"
       >
         <img
-          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=180&h=140&fit=crop&crop=center"
+          src="img/111.jpg"
           alt="Gallery 1"
-          class="object-cover rounded-xl w-full h-full shadow"
+          class="object-cover rounded-xl w-full h-full shadow row-span-2"
           in:scale={{ duration: 400, delay: 300 }}
         />
         <img
-          src="img/WhatsApp Image 2025-11-01 at 09.00.10_7b131577.jpg"
+          src="img/2222.jpg"
           alt="Gallery 2"
           class="object-cover rounded-xl w-full h-full shadow"
           in:scale={{ duration: 400, delay: 400 }}
@@ -95,7 +95,7 @@ onMount(() => {
           in:scale={{ duration: 400, delay: 500 }}
         />
         <img
-          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=180&h=140&fit=crop&crop=center"
+          src="img/3333.jpg"
           alt="Gallery 4"
           class="object-cover rounded-xl w-full h-full shadow"
           in:scale={{ duration: 400, delay: 600 }}
@@ -105,12 +105,6 @@ onMount(() => {
           alt="Gallery 5"
           class="object-cover rounded-xl w-full h-full shadow"
           in:scale={{ duration: 400, delay: 700 }}
-        />
-        <img
-          src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=180&h=140&fit=crop&crop=center"
-          alt="Gallery 6"
-          class="object-cover rounded-xl w-full h-full shadow"
-          in:scale={{ duration: 400, delay: 800 }}
         />
       </div>
     {/if}
