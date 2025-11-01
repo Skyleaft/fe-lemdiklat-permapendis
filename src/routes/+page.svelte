@@ -83,7 +83,7 @@ onMount(() => {
           in:scale={{ duration: 400, delay: 300 }}
         />
         <img
-          src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=180&h=140&fit=crop&crop=center"
+          src="img/WhatsApp Image 2025-11-01 at 09.00.10_7b131577.jpg"
           alt="Gallery 2"
           class="object-cover rounded-xl w-full h-full shadow"
           in:scale={{ duration: 400, delay: 400 }}
@@ -107,7 +107,7 @@ onMount(() => {
           in:scale={{ duration: 400, delay: 700 }}
         />
         <img
-          src="https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=180&h=140&fit=crop&crop=center"
+          src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=180&h=140&fit=crop&crop=center"
           alt="Gallery 6"
           class="object-cover rounded-xl w-full h-full shadow"
           in:scale={{ duration: 400, delay: 800 }}
@@ -188,7 +188,7 @@ onMount(() => {
         <SkemaCard
           title="Pelatihan Kepala Sekolah MI/SD"
           subtitle="Program pelatihan komprehensif untuk kepala sekolah MI/SD dalam kepemimpinan pendidikan, manajemen sekolah, dan pengembangan kurikulum tingkat dasar."
-          imgSrc="https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=400&h=300&fit=crop&crop=center"
+          imgSrc="/img/WhatsApp Image 2025-11-01 at 08.45.13_f753f43c.jpg"
           imgAlt="Pelatihan Kepala Sekolah MI/SD"
         />
         <SkemaCard
@@ -200,7 +200,7 @@ onMount(() => {
         <SkemaCard
           title="Pelatihan Kepala Sekolah SMA/SMK"
           subtitle="Program pelatihan untuk kepala sekolah SMA/SMK fokus pada persiapan siswa ke perguruan tinggi, link and match industri, dan pengembangan soft skills."
-          imgSrc="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop&crop=center"
+          imgSrc="/img/WhatsApp Image 2025-11-01 at 08.52.17_5cf38a4b.jpg"
           imgAlt="Pelatihan Kepala Sekolah SMA/SMK"
         />
       </div>
