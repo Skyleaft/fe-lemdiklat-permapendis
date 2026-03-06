@@ -66,7 +66,7 @@ onMount(() => {
         class="mt-3 text-base md:text-lg text-primary-dim text-center md:text-left"
         in:fly={{ x: -30, duration: 500, delay: 200 }}
       >
-        <em>Note: website masih dalam tahap pengembangan</em>
+      <span class="text-primary font-semibold">Lembaga Pendidikan dan Pelatihan Permapendis</span> adalah pusat pelatihan yang berdedikasi untuk meningkatkan kompetensi tenaga pendidik dan kependidikan di Indonesia.
       </p>
     {/if}
   </div>

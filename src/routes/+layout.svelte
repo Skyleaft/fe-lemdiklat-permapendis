@@ -15,6 +15,7 @@
 	let { children } = $props();
 
 	let isDark = $state(false);
+	let isMobileOpen = $state(false);
 
 	function applyThemeAttr(dark: boolean) {
 		if (typeof document !== 'undefined') {

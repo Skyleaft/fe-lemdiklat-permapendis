@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button,Icon,Dialog } from 'm3-svelte';
+  import { Button} from 'm3-svelte';
   let email = "";
   let subscribed = false;
 
@@ -29,9 +29,10 @@
 
     <!-- Navigasi Footer -->
     <div>
-      <h2 class="font-bold text-lg mb-2">Navigasi</h2>
+      <h2 class="font-bold text-lg mb-2">Halaman</h2>
       <ul class="space-y-1">
         <li><a href="/" class="hover:underline">Beranda</a></li>
+        <li><a href="/articles" class="hover:underline">Artikel</a></li>
         <li><a href="/about" class="hover:underline">Tentang</a></li>
         <li><a href="/contact" class="hover:underline">Kontak</a></li>
       </ul>
@@ -61,7 +62,7 @@
     </div>
   </div>
   <div class="container mx-auto px-6 py-4 text-center text-xs text-on-surface-variant">
-    &copy; {new Date().getFullYear()} Lemdiklat Permapendis. Hak cipta dilindungi undang-undang.
+    &copy; {new Date().getFullYear()} Lemdiklat Permapendis.
   </div>
 </footer>
 

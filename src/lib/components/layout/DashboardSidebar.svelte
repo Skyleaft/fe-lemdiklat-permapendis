@@ -2,31 +2,32 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { slide } from 'svelte/transition';
-	import { Icon } from 'm3-svelte';
-	import iconDashboard from '@ktibow/iconset-material-symbols/dashboard';
-	import iconCourses from '@ktibow/iconset-material-symbols/school';
-	import iconExams from '@ktibow/iconset-material-symbols/quiz';
-	import iconCertificates from '@ktibow/iconset-material-symbols/workspace-premium';
-	import iconArticles from '@ktibow/iconset-material-symbols/article';
-	import iconSchedule from '@ktibow/iconset-material-symbols/calendar-today';
-	import iconProfile from '@ktibow/iconset-material-symbols/person';
-	import iconSettings from '@ktibow/iconset-material-symbols/settings';
-	import iconLogout from '@ktibow/iconset-material-symbols/logout';
-	import iconExpand from '@ktibow/iconset-material-symbols/expand-more';
-	import iconCollapse from '@ktibow/iconset-material-symbols/expand-less';
-	import iconHome from '@ktibow/iconset-material-symbols/home';
+import { Icon } from 'm3-svelte';
+import type { IconifyIcon } from '@iconify/svelte';
+import iconDashboard from '@ktibow/iconset-material-symbols/dashboard';
+import iconCourses from '@ktibow/iconset-material-symbols/school';
+import iconExams from '@ktibow/iconset-material-symbols/quiz';
+import iconCertificates from '@ktibow/iconset-material-symbols/workspace-premium';
+import iconArticles from '@ktibow/iconset-material-symbols/article';
+import iconSchedule from '@ktibow/iconset-material-symbols/calendar-today';
+import iconProfile from '@ktibow/iconset-material-symbols/person';
+import iconSettings from '@ktibow/iconset-material-symbols/settings';
+import iconLogout from '@ktibow/iconset-material-symbols/logout';
+import iconExpand from '@ktibow/iconset-material-symbols/expand-more';
+import iconCollapse from '@ktibow/iconset-material-symbols/expand-less';
+import iconHome from '@ktibow/iconset-material-symbols/home';
 	import { authStore } from '$lib/stores/auth';
 
-	type SubNavItem = {
+type SubNavItem = {
 		href?: string;
-		icon: any;
+		icon: IconifyIcon;
 		label: string;
 		action?: () => void;
 	};
 
 	type NavItem = {
 		href?: string;
-		icon: any;
+		icon: IconifyIcon;
 		label: string;
 		children?: SubNavItem[];
 	};
@@ -213,9 +214,27 @@
 		justify-content: space-between;
 	}
 
+	.mobile-toggle {
+		display: none;
+	}
+
 	@media (max-width: 1024px) {
 		.dashboard-sidebar {
-			display: none; /* Hide on mobile, could add toggle later */
+			position: fixed;
+			top: 0;
+			left: 0;
+			height: 100vh;
+			z-index: 50;
+			transform: translateX(-100%);
+			transition: transform 0.3s ease-in-out;
+		}
+
+		.dashboard-sidebar.open {
+			transform: translateX(0);
+		}
+
+		.mobile-toggle {
+			display: block;
 		}
 	}
 </style>
