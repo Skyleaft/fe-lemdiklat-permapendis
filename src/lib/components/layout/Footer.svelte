@@ -30,11 +30,14 @@
     <!-- Navigasi Footer -->
     <div>
       <h2 class="font-bold text-lg mb-2">Halaman</h2>
-      <ul class="space-y-1">
+<ul class="space-y-1">
         <li><a href="/" class="hover:underline">Beranda</a></li>
         <li><a href="/articles" class="hover:underline">Artikel</a></li>
         <li><a href="/about" class="hover:underline">Tentang</a></li>
         <li><a href="/contact" class="hover:underline">Kontak</a></li>
+        <li><a href="/disclaimer" class="hover:underline">Disclaimer</a></li>
+        <li><a href="/privacy" class="hover:underline">Kebijakan Privasi</a></li>
+        <li><a href="/sitemap" class="hover:underline">Sitemap</a></li>
       </ul>
     </div>
 

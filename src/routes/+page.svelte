@@ -180,27 +180,27 @@ onMount(() => {
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-6xl mx-auto"
       >
         <SkemaCard
-          title="Pelatihan Kepala Sekolah MI/SD"
-          subtitle="Program pelatihan komprehensif untuk kepala sekolah MI/SD dalam kepemimpinan pendidikan, manajemen sekolah, dan pengembangan kurikulum tingkat dasar."
+          title="Pelatihan Kepala Sekolah Dasar (SD) / Madrasah Ibtidaiyah (MI)"
+          subtitle="Program pelatihan komprehensif untuk kepala sekolah SD/MI dalam kepemimpinan pendidikan, manajemen sekolah, dan pengembangan kurikulum tingkat dasar."
           imgSrc="/img/WhatsApp Image 2025-11-01 at 08.45.13_f753f43c.jpg"
           imgAlt="Pelatihan Kepala Sekolah MI/SD"
         />
         <SkemaCard
-          title="Pelatihan Kepala Sekolah SMP"
-          subtitle="Pelatihan khusus kepala sekolah SMP meliputi manajemen remaja, pengembangan karakter siswa, dan strategi pembelajaran efektif tingkat menengah pertama."
+          title="Pelatihan Kepala Sekolah SMP/MTS"
+          subtitle="Pelatihan khusus kepala sekolah SMP/MTS meliputi manajemen remaja, pengembangan karakter siswa, dan strategi pembelajaran efektif tingkat menengah pertama."
           imgSrc="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=300&fit=crop&crop=center"
           imgAlt="Pelatihan Kepala Sekolah SMP"
         />
         <SkemaCard
-          title="Pelatihan Kepala Sekolah SMA/SMK"
-          subtitle="Program pelatihan untuk kepala sekolah SMA/SMK fokus pada persiapan siswa ke perguruan tinggi, link and match industri, dan pengembangan soft skills."
+          title="Pelatihan Kepala Sekolah SMA/SMK/MA/MAK"
+          subtitle="Program pelatihan untuk kepala sekolah SMA/SMK/MA/MAK fokus pada persiapan siswa ke perguruan tinggi, link and match industri, dan pengembangan soft skills."
           imgSrc="/img/WhatsApp Image 2025-11-01 at 08.52.17_5cf38a4b.jpg"
           imgAlt="Pelatihan Kepala Sekolah SMA/SMK"
         />
       </div>
   </section>
 
-<section class="my-16 mx-8">
+<!-- <section class="my-16 mx-8">
   <h2 
     class="text-2xl md:text-3xl font-bold text-primary mb-4 text-center"
   >
@@ -236,7 +236,7 @@ onMount(() => {
       imageAlt="Dr. Maya Sari"
     />
   </div>
-</section>
+</section> -->
 
 <section class="my-16 mx-8">
   <h2 
